@@ -57,7 +57,7 @@ const Home = () => {
 
   return (
     <>
-      <section className=' sm:p-[20px] md:p-[30px] lg:p-[50px] text-white'>
+      <section className=' sm:p-[20px] md:p-[30px] lg:p-[50px] text-white overflow-hidden'>
         <Header />
         <div
           data-aos='fade-left'
@@ -142,22 +142,56 @@ const Home = () => {
             <div className='text-[20px] font-semibold text-center'>
               Our <span className='text-orange-300 overline'>Service</span>
             </div>
-            <div className='grid grid-cols-2 sm:grid-cols-3 gap-y-[20px] mt-[20px] gap-x-[50px]'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 gap-y-[20px] mt-[20px] gap-x-[20px]' data-aos='fade-right'>
               <div className='h-[100px] rounded-[10px]  border overflow-hidden'>
                 <img width={'100%'} src={img} alt='' />
               </div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden'>
+              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-left'>
                 <img width={'100%'} src={img} alt='' />
               </div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden'></div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden'></div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden'></div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden'></div>
+              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-right'></div>
+              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-left'></div>
+              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-right'></div>
+              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-left'></div>
             </div>
           </div>
         </div>
 
         <div className='flex flex-col-reverse md:flex-row sm:p-[30px_100px] justify-evenly items-center mt-[30px] p-[30px_20px] gap-[30px] sm:gap-[50px] md:gap-[70px] lg:gap-[100px]'>
+          <div className='grid grid-cols-2  gap-[20px]'>
+            <div className='flex flex-col gap-[30px]'>
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
+                <img src={img} width={'100%'} alt='' />
+              </div>
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
+                <img src={img} width={'100%'} alt='' />
+              </div>
+            </div>
+
+            <div className='flex flex-col gap-[30px] mt-[30px]' >
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
+                <img src={img} width={'100%'} alt='' />
+              </div>
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
+                <img src={img} width={'100%'} alt='' />
+              </div>
+            </div>
+          </div>
+          <div className=' space-y-[20px] md:space-y-[30px] lg:space-y-[40px]'>
+            
+            <div className='text-[25px] sm:text-[32px] md:text-[40px]' data-aos='fade-right'>
+              Zoodrop – <span className='text-orange-300 overline'>Fast</span>{' '}
+              Rides, Fair Prices
+            </div>
+            <p className='text-[18px] tracking-tight' data-aos='fade-left'>
+              Zoodrop – The fastest way to ride, the smartest way to save! 🚀💨
+              Get anywhere, anytime, at prices that make sense
+            </p>
+          </div>
+        </div>
+
+
+        <div className='flex flex-col-reverse md:flex-row-reverse sm:p-[30px_100px] justify-evenly items-center mt-[30px] p-[30px_20px] gap-[30px] sm:gap-[50px] md:gap-[70px] lg:gap-[100px]'>
           <div className='grid grid-cols-2  gap-[20px]'>
             <div className='flex flex-col gap-[30px]'>
               <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>

@@ -16,7 +16,7 @@ const Header = () => {
         className='rounded-[8px] text-white flex justify-between p-[10px_20px] items-center'
       >
         <figure className='rounded-[10px] border'>
-          <img width={"100px"} className='rounded-[10px]' src={logo} alt='' />
+          <img width={'100px'} className='rounded-[10px]' src={logo} alt='' />
         </figure>
         <div>
           <i className='block md:hidden text-white text-[25px]'>
@@ -24,11 +24,21 @@ const Header = () => {
           </i>
           <nav className='hidden md:block'>
             <ul className='p-[15px] flex gap-[40px] text-[18px] border-b-[1px] border-slate-400 rounded-[20px]'>
-              <li className='cursor-pointer'>Contact Us</li>
-              <li className='cursor-pointer'>Your Smile</li>
-              <li className='cursor-pointer'>Blog</li>
-              <li className='cursor-pointer'>Safety</li>
-              <li className='cursor-pointer'>Store</li>
+              <li className='cursor-pointer' data-aos='fade-up'>
+                Contact Us
+              </li>
+              <li className='cursor-pointer' data-aos='fade-down'>
+                Your Smile
+              </li>
+              <li className='cursor-pointer' data-aos='fade-up'>
+                Blog
+              </li>
+              <li className='cursor-pointer' data-aos='fade-down'>
+                Safety
+              </li>
+              <li className='cursor-pointer' data-aos='fade-up'>
+                Store
+              </li>
             </ul>
           </nav>
         </div>
