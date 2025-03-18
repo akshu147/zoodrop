@@ -6,7 +6,7 @@ import { BsMenuButtonFill } from 'react-icons/bs'
 
 const Header = () => {
   useEffect(() => {
-    AOS.init({ duration: 500, easing: 'ease-in-out', once: true })
+    AOS.init({ duration: 500, once: false })
   }, [])
 
   return (

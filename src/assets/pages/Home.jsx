@@ -17,7 +17,7 @@ const Home = () => {
 
   // Initialize AOS on component mount
   useEffect(() => {
-    Aos.init({ duration: 1000 })
+    Aos.init({ duration: 500, once:false })
   }, [])
 
   // Function to get the current location
@@ -42,7 +42,7 @@ const Home = () => {
     setQuery(value)
     if (value.trim() === '') {
       setSuggestions([])
-      return;
+      return
     }
     try {
       const responce = await axios.get(
@@ -94,7 +94,12 @@ const Home = () => {
               />
             </div>
 
-            <ul style={{display:`${(suggestions.length == 0)?"none":"block"}`}} className='bg-white text-black border-[1px] border-slate-400 w-[90%] m-auto mt-[10px] h-[200px] overflow-auto p-[10px] rounded-[10px]'>
+            <ul
+              style={{
+                display: `${suggestions.length == 0 ? 'none' : 'block'}`
+              }}
+              className='bg-white text-black border-[1px] border-slate-400 w-[90%] m-auto mt-[10px] h-[200px] overflow-auto p-[10px] rounded-[10px]'
+            >
               {suggestions.length > 0 &&
                 suggestions.map((value, index) => (
                   <li
@@ -152,28 +157,36 @@ const Home = () => {
           </div>
         </div>
 
-        <div className='flex flex-col-reverse items-center mt-[30px] p-[30px_10px] gap-[60px]'>
-          <div className='grid grid-cols-2  border-[2px] border-red-500 gap-[20px]'>
+        <div className='flex flex-col-reverse md:flex-row sm:p-[30px_100px] justify-evenly items-center mt-[30px] p-[30px_20px] gap-[30px] sm:gap-[50px] md:gap-[70px] lg:gap-[100px]'>
+          <div className='grid grid-cols-2  gap-[20px]'>
             <div className='flex flex-col gap-[30px]'>
-              <div className='border rounded-[15px] w-[160px] overflow-hidden'>
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
                 <img src={img} width={'100%'} alt='' />
               </div>
-              <div className='border rounded-[15px] w-[160px] overflow-hidden'>
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
                 <img src={img} width={'100%'} alt='' />
               </div>
             </div>
 
-            <div className='flex flex-col gap-[30px] mt-[30px]'>
-              <div className='border rounded-[15px] w-[160px] overflow-hidden'>
+            <div className='flex flex-col gap-[30px] mt-[30px]' >
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
                 <img src={img} width={'100%'} alt='' />
               </div>
-              <div className='border rounded-[15px] w-[160px] overflow-hidden'>
+              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
                 <img src={img} width={'100%'} alt='' />
               </div>
             </div>
           </div>
-          <div className='border'>
-            <div className='text-[50px]'>Zoodrop – Fast Rides, Fair Prices</div>
+          <div className=' space-y-[20px] md:space-y-[30px] lg:space-y-[40px]'>
+            
+            <div className='text-[25px] sm:text-[32px] md:text-[40px]' data-aos='fade-right'>
+              Zoodrop – <span className='text-orange-300 overline'>Fast</span>{' '}
+              Rides, Fair Prices
+            </div>
+            <p className='text-[18px] tracking-tight' data-aos='fade-left'>
+              Zoodrop – The fastest way to ride, the smartest way to save! 🚀💨
+              Get anywhere, anytime, at prices that make sense
+            </p>
           </div>
         </div>
       </section>
