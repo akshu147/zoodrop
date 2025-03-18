@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Header from '../componants/Header'
 import { IoIosFlash } from 'react-icons/io'
 import { MdAddLocation, MdOutlinePinDrop } from 'react-icons/md'
-import autoimg from '../images/auto.Webp'
 import biketaxi from '../images/biketaxi.Webp'
 import img from '../images/logo.Webp'
 
@@ -103,7 +102,7 @@ const Home = () => {
               Our <span className='text-orange-300 overline'>Service</span>
             </div>
             <div className='grid grid-cols-2 sm:grid-cols-3 gap-y-[20px] mt-[20px] gap-x-[50px]'>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden'><img width={"100%"} src={autoimg} alt="" /></div>
+              <div className='h-[100px] rounded-[10px]  border overflow-hidden'><img width={"100%"} src={biketaxi} alt="" /></div>
               <div className='h-[100px] rounded-[10px]  border overflow-hidden'><img width={"100%"} src={biketaxi} alt="" /></div>
               <div className='h-[100px] rounded-[10px]  border overflow-hidden'></div>
               <div className='h-[100px] rounded-[10px]  border overflow-hidden'></div>
