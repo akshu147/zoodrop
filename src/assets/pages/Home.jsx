@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../componants/Header'
 import { IoIosFlash } from 'react-icons/io'
 import { MdAddLocation, MdOutlinePinDrop } from 'react-icons/md'
-import img from '../images/logo.Webp'
+import img from '../images/new.png'
 
 import Aos from 'aos'
 import 'aos/dist/aos.css' // Import AOS styles
