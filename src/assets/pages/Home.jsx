@@ -187,6 +187,7 @@ const Home = () => {
               Zoodrop – The fastest way to ride, the smartest way to save! 🚀💨
               Get anywhere, anytime, at prices that make sense
             </p>
+            <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>Book Now</button>
           </div>
         </div>
 
@@ -221,6 +222,8 @@ const Home = () => {
               Zoodrop – The fastest way to ride, the smartest way to save! 🚀💨
               Get anywhere, anytime, at prices that make sense
             </p>
+            <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>Earning</button>
+
           </div>
         </div>
       </section>

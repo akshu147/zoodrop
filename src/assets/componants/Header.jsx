@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import logo from '../images/new.png'
+import logo from "../images/lalitlogo.png"
 import AOS from 'aos'
 import 'aos/dist/aos.css' // Import AOS styles
 import { BsMenuButtonFill } from 'react-icons/bs'
@@ -15,7 +15,7 @@ const Header = () => {
         data-aos='fade-down'
         className='rounded-[8px] text-white flex justify-between p-[10px_20px] items-center'
       >
-        <figure className='rounded-[10px] border'>
+        <figure className='rounded-[10px]'>
           <img width={'100px'} className='rounded-[10px]' src={logo} alt='' />
         </figure>
         <div>
