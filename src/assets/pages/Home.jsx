@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../componants/Header'
 import { IoIosFlash } from 'react-icons/io'
 import { MdAddLocation, MdHeight, MdOutlinePinDrop } from 'react-icons/md'
 import img from '../images/new.png'
@@ -71,8 +70,7 @@ const Home = () => {
 
   return (
     <>
-      <section className=' sm:p-[20px] md:p-[30px] lg:p-[50px] text-white overflow-hidden border'>
-        <Header />
+      <section className=' sm:p-[20px] md:p-[30px] lg:p-[50px] text-white overflow-hidden'>
         <div
           data-aos='fade-left'
           className='p-[20px_40px] rounded-[8px] text-center text-[20px] sm:text-[30px] md:text-[30px] font-semibold'
