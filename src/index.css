@@ -2,6 +2,12 @@
 body {
   background: #030712;
 }
+.headerlogo {
+  background-image: url('./assets/images/logolalit.png');
+  background-size: cover;
+  background-position: center center;
+  
+}
 
 
 

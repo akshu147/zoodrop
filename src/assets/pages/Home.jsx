@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../componants/Header'
 import { IoIosFlash } from 'react-icons/io'
-import { MdAddLocation, MdOutlinePinDrop } from 'react-icons/md'
+import { MdAddLocation, MdHeight, MdOutlinePinDrop } from 'react-icons/md'
 import img from '../images/new.png'
 
 import Aos from 'aos'
@@ -14,10 +14,11 @@ const Home = () => {
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const token = 'pk.6d16e37f4e7c843845e1a6faae12ddac'
+  const [bottombar, setbottombar] = useState()
 
   // Initialize AOS on component mount
   useEffect(() => {
-    Aos.init({ duration: 500, once:false })
+    Aos.init({ duration: 500, once: false })
   }, [])
 
   // Function to get the current location
@@ -46,7 +47,7 @@ const Home = () => {
     }
     try {
       const responce = await axios.get(
-        ` https://api.locationiq.com/v1/autocomplete?key=${token}&q=${query}`
+        ` https://api.locationiq.com/v1/autocomplete?key=${token}&q=${query}&countrycodes=in`
       )
       setSuggestions(responce.data)
     } catch (err) {
@@ -55,13 +56,26 @@ const Home = () => {
     }
   }
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight
+      const scrollPercentage = (scrollTop / scrollHeight) * 100
+      setbottombar(scrollPercentage)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <>
-      <section className=' sm:p-[20px] md:p-[30px] lg:p-[50px] text-white overflow-hidden'>
+      <section className=' sm:p-[20px] md:p-[30px] lg:p-[50px] text-white overflow-hidden border'>
         <Header />
         <div
           data-aos='fade-left'
-          className='p-[20px_40px] rounded-[8px] text-center text-[20px] sm:text-[30px] md:text-[40px] font-semibold'
+          className='p-[20px_40px] rounded-[8px] text-center text-[20px] sm:text-[30px] md:text-[30px] font-semibold'
         >
           Ride <span className='text-orange-300 overline'>Fast</span>, Ride
           Smart{' '}
@@ -142,17 +156,35 @@ const Home = () => {
             <div className='text-[20px] font-semibold text-center'>
               Our <span className='text-orange-300 overline'>Service</span>
             </div>
-            <div className='grid grid-cols-2 sm:grid-cols-3 gap-y-[20px] mt-[20px] gap-x-[20px]' data-aos='fade-right'>
+            <div
+              className='grid grid-cols-2 sm:grid-cols-3 gap-y-[20px] mt-[20px] gap-x-[20px]'
+              data-aos='fade-right'
+            >
               <div className='h-[100px] rounded-[10px]  border overflow-hidden'>
                 <img width={'100%'} src={img} alt='' />
               </div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-left'>
+              <div
+                className='h-[100px] rounded-[10px]  border overflow-hidden'
+                data-aos='fade-left'
+              >
                 <img width={'100%'} src={img} alt='' />
               </div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-right'></div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-left'></div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-right'></div>
-              <div className='h-[100px] rounded-[10px]  border overflow-hidden' data-aos='fade-left'></div>
+              <div
+                className='h-[100px] rounded-[10px]  border overflow-hidden'
+                data-aos='fade-right'
+              ></div>
+              <div
+                className='h-[100px] rounded-[10px]  border overflow-hidden'
+                data-aos='fade-left'
+              ></div>
+              <div
+                className='h-[100px] rounded-[10px]  border overflow-hidden'
+                data-aos='fade-right'
+              ></div>
+              <div
+                className='h-[100px] rounded-[10px]  border overflow-hidden'
+                data-aos='fade-left'
+              ></div>
             </div>
           </div>
         </div>
@@ -160,26 +192,40 @@ const Home = () => {
         <div className='flex flex-col-reverse md:flex-row sm:p-[30px_100px] justify-evenly items-center mt-[30px] p-[30px_20px] gap-[30px] sm:gap-[50px] md:gap-[70px] lg:gap-[100px]'>
           <div className='grid grid-cols-2  gap-[20px]'>
             <div className='flex flex-col gap-[30px]'>
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-right'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-right'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
             </div>
 
-            <div className='flex flex-col gap-[30px] mt-[30px]' >
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
+            <div className='flex flex-col gap-[30px] mt-[30px]'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-left'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-left'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
             </div>
           </div>
           <div className=' space-y-[20px] md:space-y-[30px] lg:space-y-[40px]'>
-            
-            <div className='text-[25px] sm:text-[32px] md:text-[40px]' data-aos='fade-right'>
+            <div
+              className='text-[25px] sm:text-[32px] md:text-[40px]'
+              data-aos='fade-right'
+            >
               Zoodrop – <span className='text-orange-300 overline'>Fast</span>{' '}
               Rides, Fair Prices
             </div>
@@ -187,34 +233,49 @@ const Home = () => {
               Zoodrop – The fastest way to ride, the smartest way to save! 🚀💨
               Get anywhere, anytime, at prices that make sense
             </p>
-            <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>Book Now</button>
+            <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>
+              Book Now
+            </button>
           </div>
         </div>
-
 
         <div className='flex flex-col-reverse md:flex-row-reverse sm:p-[30px_100px] justify-evenly items-center mt-[30px] p-[30px_20px] gap-[30px] sm:gap-[50px] md:gap-[70px] lg:gap-[100px]'>
           <div className='grid grid-cols-2  gap-[20px]'>
             <div className='flex flex-col gap-[30px]'>
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-right'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-right'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-right'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
             </div>
 
-            <div className='flex flex-col gap-[30px] mt-[30px]' >
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
+            <div className='flex flex-col gap-[30px] mt-[30px]'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-left'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
-              <div className='border rounded-[15px] overflow-hidden' data-aos='fade-left'>
+              <div
+                className='border rounded-[15px] overflow-hidden'
+                data-aos='fade-left'
+              >
                 <img src={img} width={'100%'} alt='' />
               </div>
             </div>
           </div>
           <div className=' space-y-[20px] md:space-y-[30px] lg:space-y-[40px]'>
-            
-            <div className='text-[25px] sm:text-[32px] md:text-[40px]' data-aos='fade-right'>
+            <div
+              className='text-[25px] sm:text-[32px] md:text-[40px]'
+              data-aos='fade-right'
+            >
               Zoodrop – <span className='text-orange-300 overline'>Fast</span>{' '}
               Rides, Fair Prices
             </div>
@@ -222,11 +283,16 @@ const Home = () => {
               Zoodrop – The fastest way to ride, the smartest way to save! 🚀💨
               Get anywhere, anytime, at prices that make sense
             </p>
-            <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>Earning</button>
-
+            <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>
+              Earning
+            </button>
           </div>
         </div>
       </section>
+      <div
+        style={{ width: `${bottombar}%` }}
+        className='fixed bottom-0 left-0 bg-[#FFB86A] h-[5px] transition-all duration-150'
+      ></div>
     </>
   )
 }
