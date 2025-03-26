@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <>
-      <header className='rounded-[8px] text-white flex justify-between p-[10px_20px] items-center border m-[20px_50px]'>
+      <header className='rounded-[8px] text-white flex justify-between p-[10px_20px] items-center m-[20px_10px] md:m-[20px_40px] lg:m-[40px_100px]'>
         <figure className='w-[80px]' data-aos='fade-right'>
           <img src={logo} className='w-full' alt='' />
         </figure>
@@ -32,16 +32,7 @@ const Header = () => {
             </ul>
           </nav>
         </div>
-        <div>
-          <Link to={'/login'}>
-            <button
-              className='cursor-pointer hover:bg-[#FFB86A] bg-[#23F39C] text-[15px] p-[4px_15px] rounded-[8px]'
-              data-aos='fade-left'
-            >
-              Sing Up
-            </button>
-          </Link>
-        </div>
+      
       </header>
     </>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { IoIosFlash } from 'react-icons/io'
 import { MdAddLocation, MdHeight, MdOutlinePinDrop } from 'react-icons/md'
 import img from '../images/new.png'
@@ -6,13 +6,16 @@ import img from '../images/new.png'
 import Aos from 'aos'
 import 'aos/dist/aos.css' // Import AOS styles
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
+  const inputRef = useRef(null)
   const [pickup, setPickup] = useState('')
   const [drop, setDrop] = useState('')
-  const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const token = 'pk.6d16e37f4e7c843845e1a6faae12ddac'
+  // const token = 'pk.6d16e37f4e7c843845e1a6faae12ddac'  // this is Locationiq autocomplete places suggestion api
+  const [address, setAddress] = useState('')
+  const [coordinates, setCoordinates] = useState({ lat: null, lng: null })
   const [bottombar, setbottombar] = useState()
 
   // Initialize AOS on component mount
@@ -37,23 +40,38 @@ const Home = () => {
     }
   }
 
-  const autosuggestionsearch = async e => {
-    const value = e.target.value
-    setQuery(value)
-    if (value.trim() === '') {
-      setSuggestions([])
+  useEffect(() => {
+    if (!window.google) {
+      console.error('Google Maps JavaScript API not loaded.')
       return
     }
-    try {
-      const responce = await axios.get(
-        ` https://api.locationiq.com/v1/autocomplete?key=${token}&q=${query}&countrycodes=in`
-      )
-      setSuggestions(responce.data)
-    } catch (err) {
-      console.log('something went wrong')
-      console.log(err)
-    }
-  }
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        types: ['geocode'], // Change to ["(cities)"] for city suggestions
+        componentRestrictions: { country: 'IN' } // Restrict to a specific country (optional)
+      }
+    )
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      if (!place.geometry) {
+        console.error('No details available for this location.')
+        return
+      }
+
+      setAddress(place.formatted_address)
+      setCoordinates({
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      })
+
+      console.log('Selected Place:', place)
+      console.log('Latitude:', place.geometry.location.lat())
+      console.log('Longitude:', place.geometry.location.lng())
+    })
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,7 +81,6 @@ const Home = () => {
       const scrollPercentage = (scrollTop / scrollHeight) * 100
       setbottombar(scrollPercentage)
     }
-
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -98,12 +115,25 @@ const Home = () => {
                 <MdAddLocation className='cursor-pointer' />
               </i>
               <input
+                ref={inputRef}
                 type='text'
+                id='location'
                 className='w-full py-[4px] focus:outline-none'
                 placeholder='Pickup Location'
-                value={query}
-                onChange={autosuggestionsearch}
               />
+              {address && (
+                <div className='mt-2 text-sm border bg-amber-400'>
+                  <p>
+                    <strong>Selected Address:</strong> {address}
+                  </p>
+                  <p>
+                    <strong>Latitude:</strong> {coordinates.lat}
+                  </p>
+                  <p>
+                    <strong>Longitude:</strong> {coordinates.lng}
+                  </p>
+                </div>
+              )}
             </div>
 
             <ul
@@ -141,9 +171,12 @@ const Home = () => {
             </div>
 
             {/* Book Now Button */}
-            <button className='cursor-pointer hover:bg-[#FFB86A] bg-[#5B5EB6] text-[20px] block m-auto w-[90%] sm:w-[70%] py-[10px] rounded-[8px] md:w-[60%] lg:w-[40%]'>
-              Book Now
+            <button className='cursor-pointer font-semibold hover:shadow-xl bg-gradient-to-r from-purple-500 to-blue-500 text-[20px] block m-auto w-[90%] sm:w-[70%] py-[10px] rounded-[8px] md:w-[60%] lg:w-[40%] transition duration-300'>
+            <Link to={"rent"}>Book Now</Link>
+
             </button>
+
+          
           </form>
 
           {/* Extra Info Section */}
@@ -232,7 +265,7 @@ const Home = () => {
               Get anywhere, anytime, at prices that make sense
             </p>
             <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>
-              Book Now
+            Book Now
             </button>
           </div>
         </div>
