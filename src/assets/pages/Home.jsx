@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { IoIosFlash } from 'react-icons/io'
 import { MdAddLocation, MdHeight, MdOutlinePinDrop } from 'react-icons/md'
 import img from '../images/new.png'
@@ -6,39 +6,25 @@ import img from '../images/new.png'
 import Aos from 'aos'
 import 'aos/dist/aos.css' // Import AOS styles
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
+import { MyContext } from '../../contextapi/Context'
+import { FaLocationCrosshairs } from 'react-icons/fa6'
 
 const Home = () => {
-  const inputRef = useRef(null)
-  const [pickup, setPickup] = useState('')
+  const pickublocation = useRef(null)
+  const droplocation = useRef(null)
   const [drop, setDrop] = useState('')
-  const [suggestions, setSuggestions] = useState([])
   // const token = 'pk.6d16e37f4e7c843845e1a6faae12ddac'  // this is Locationiq autocomplete places suggestion api
   const [address, setAddress] = useState('')
   const [coordinates, setCoordinates] = useState({ lat: null, lng: null })
   const [bottombar, setbottombar] = useState()
+  const { pickupLocation, setPickupLocation, dropLocation, setDropLocation } =
+    useContext(MyContext)
 
   // Initialize AOS on component mount
   useEffect(() => {
     Aos.init({ duration: 500, once: false })
   }, [])
-
-  // Function to get the current location
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const { latitude, longitude } = position.coords
-          setPickup(`Lat: ${latitude}, Long: ${longitude}`)
-        },
-        error => {
-          console.error('Error getting location:', error)
-        }
-      )
-    } else {
-      alert('Geolocation is not supported by your browser.')
-    }
-  }
 
   useEffect(() => {
     if (!window.google) {
@@ -47,7 +33,7 @@ const Home = () => {
     }
 
     const autocomplete = new window.google.maps.places.Autocomplete(
-      inputRef.current,
+      pickublocation.current,
       {
         types: ['geocode'], // Change to ["(cities)"] for city suggestions
         componentRestrictions: { country: 'IN' } // Restrict to a specific country (optional)
@@ -62,14 +48,86 @@ const Home = () => {
       }
 
       setAddress(place.formatted_address)
+      setPickupLocation(place.formatted_address)
+      console.log('I love you')
       setCoordinates({
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng()
       })
+    })
+  }, [])
 
-      console.log('Selected Place:', place)
-      console.log('Latitude:', place.geometry.location.lat())
-      console.log('Longitude:', place.geometry.location.lng())
+
+  // get current location functin 
+  const getCurrentLocation = async (e) => {
+    e.preventDefault(); // Prevents page reload
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async position => {
+          const { latitude, longitude } = position.coords;
+          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+
+          try {
+            const API_KEY = 'AIzaSyB5jk1PqvooOy0lab0OaNWzN8dYgdOuBOY'; // Replace with your key
+            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`;
+    
+            const response = await axios.get(url);
+            if (response.data.results.length > 0) {
+              const place = response.data.results[0].formatted_address;
+              console.log('Address:', place);
+              setAddress(place);
+              
+            } else {
+              console.error('No address found for this location.');
+            }
+          } catch (err) {
+            console.error('Error fetching address:', err.message);
+          }
+        },
+        error => {
+          console.error('Error fetching location:', error);
+          alert('Unable to fetch location. Please enable GPS.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  };
+
+  // get current location functin 
+
+
+
+
+
+
+  useEffect(() => {
+    if (!window.google) {
+      console.error('Google Maps JavaScript API not loaded.')
+      return
+    }
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      droplocation.current,
+      {
+        types: ['geocode'], // Change to ["(cities)"] for city suggestions
+        componentRestrictions: { country: 'IN' } // Restrict to a specific country (optional)
+      }
+    )
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      if (!place.geometry) {
+        console.error('No details available for this location.')
+        return
+      }
+
+      setDrop(place.formatted_address)
+      setDropLocation(place.formatted_address)
+      setCoordinates({
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng()
+      })
     })
   }, [])
 
@@ -107,76 +165,57 @@ const Home = () => {
             data-aos='fade-right'
           >
             {/* Pickup Location */}
-            <div
-              data-aos=''
-              className='focus:shadow-md w-[90%] flex items-center gap-[10px] border border-slate-400 px-[15px] rounded-[8px] text-[20px] m-auto'
-            >
-              <i className='px-[10px]' onClick={getCurrentLocation}>
-                <MdAddLocation className='cursor-pointer' />
-              </i>
-              <input
-                ref={inputRef}
-                type='text'
-                id='location'
-                className='w-full py-[4px] focus:outline-none'
-                placeholder='Pickup Location'
-              />
-              {address && (
-                <div className='mt-2 text-sm border bg-amber-400'>
-                  <p>
-                    <strong>Selected Address:</strong> {address}
-                  </p>
-                  <p>
-                    <strong>Latitude:</strong> {coordinates.lat}
-                  </p>
-                  <p>
-                    <strong>Longitude:</strong> {coordinates.lng}
-                  </p>
-                </div>
-              )}
-            </div>
+            <div className='border border-slate-500 rounded-[20px] mx-[20px]'>
+              {/* Pickup Location */}
+              <div className='focus:shadow-md flex relative rounded-[8px] text-[20px] m-auto'>
+                <i className='px-[10px] absolute transform top-[50%] translate-y-[-50%]'>
+                  <MdAddLocation className='cursor-pointer' />
+                </i>
+                <input
+                  ref={pickublocation}
+                  type='text'
+                  id='location'
+                  className='w-full py-[15px] focus:outline-none ps-[40px]'
+                  placeholder='Pickup Location'
+                  value={address}
+                  onChange={e => setAddress(e.target.value)}
+                />
+              </div>
+              <hr className='mx-[40px] opacity-50' />
+                <div className='flex justify-end me-[40px]'>
+                      <button
+                      onClick={getCurrentLocation}
+                        className='flex gap-2 items-center mt-2 px-4 py-[2px] bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-300'
+                        
+                      >
+                        <i>
+                          <FaLocationCrosshairs />
+                        </i>
+                        <span>Use current location</span>
+                      </button>
+                    </div>
 
-            <ul
-              style={{
-                display: `${suggestions.length == 0 ? 'none' : 'block'}`
-              }}
-              className='bg-white text-black border-[1px] border-slate-400 w-[90%] m-auto mt-[10px] h-[200px] overflow-auto p-[10px] rounded-[10px]'
-            >
-              {suggestions.length > 0 &&
-                suggestions.map((value, index) => (
-                  <li
-                    key={index}
-                    onClick={() => {
-                      setQuery(value.display_name)
-                      setSuggestions([]) // Hide suggestions after selection
-                    }}
-                  >
-                    {value.display_name}
-                  </li>
-                ))}
-            </ul>
-
-            {/* Drop Location */}
-            <div className='my-[20px] focus:shadow-md w-[90%] flex items-center gap-[10px] border border-slate-400 px-[15px] rounded-[8px] text-[20px] m-auto'>
-              <i className='px-[10px]'>
-                <MdOutlinePinDrop />
-              </i>
-              <input
-                type='text'
-                className='w-full py-[4px] focus:outline-none'
-                placeholder='Drop Location'
-                value={drop}
-                onChange={e => setDrop(e.target.value)}
-              />
+              {/* Drop Location */}
+              <div className='focus:shadow-md relative rounded-[8px] text-[20px] m-auto '>
+                <i className='px-[10px] absolute transform top-[50%] translate-y-[-50%]'>
+                  <MdOutlinePinDrop />
+                </i>
+                <input
+                  ref={droplocation}
+                  className='w-full py-[15px] focus:outline-none ps-[40px]'
+                  placeholder='Drop Location'
+                  value={drop}
+                  onChange={e => setDrop(e.target.value)}
+                />
+              </div>
             </div>
 
             {/* Book Now Button */}
-            <button className='cursor-pointer font-semibold hover:shadow-xl bg-gradient-to-r from-purple-500 to-blue-500 text-[20px] block m-auto w-[90%] sm:w-[70%] py-[10px] rounded-[8px] md:w-[60%] lg:w-[40%] transition duration-300'>
-            <Link to={"rent"}>Book Now</Link>
-
-            </button>
-
-          
+            <Link to={'/rent'}>
+              <button className='mt-[10px] cursor-pointer font-semibold hover:shadow-xl bg-gradient-to-r from-purple-500 to-blue-500 text-[20px] block m-auto w-[90%] sm:w-[70%] py-[10px] rounded-[8px] md:w-[60%] lg:w-[40%] transition duration-300'>
+                Book Now
+              </button>
+            </Link>
           </form>
 
           {/* Extra Info Section */}
@@ -265,7 +304,7 @@ const Home = () => {
               Get anywhere, anytime, at prices that make sense
             </p>
             <button className='border border-slate-500 p-[6px_20px] bg-[#5B5EB6] rounded-[10px] hover:bg-[#FFB86A]  text-[20px]'>
-            Book Now
+              Book Now
             </button>
           </div>
         </div>
