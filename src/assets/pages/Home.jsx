@@ -6,21 +6,24 @@ import img from '../images/new.png'
 import Aos from 'aos'
 import 'aos/dist/aos.css' // Import AOS styles
 import axios from 'axios'
-import { Link, NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { MyContext } from '../../contextapi/Context'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
+import Cookies from 'js-cookie'
+import 'react-toastify/dist/ReactToastify.css'
+import { toast } from 'react-toastify'
 
 const Home = () => {
+  const navigate = useNavigate()
   const pickublocation = useRef(null)
   const droplocation = useRef(null)
   const [drop, setDrop] = useState('')
-  // const token = 'pk.6d16e37f4e7c843845e1a6faae12ddac'  // this is Locationiq autocomplete places suggestion api
   const [address, setAddress] = useState('')
-  const [coordinates, setCoordinates] = useState({ lat: null, lng: null })
+
+
   const [bottombar, setbottombar] = useState()
   const { pickupLocation, setPickupLocation, dropLocation, setDropLocation } =
     useContext(MyContext)
-
   // Initialize AOS on component mount
   useEffect(() => {
     Aos.init({ duration: 500, once: false })
@@ -48,58 +51,58 @@ const Home = () => {
       }
 
       setAddress(place.formatted_address)
-      setPickupLocation(place.formatted_address)
-      console.log('I love you')
-      setCoordinates({
+      setPickupLocation({
+        address:place.formatted_address,
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng()
       })
+    
+      
+     
     })
   }, [])
 
-
-  // get current location functin 
-  const getCurrentLocation = async (e) => {
-    e.preventDefault(); // Prevents page reload
+  // get current location functin
+  const getCurrentLocation = async e => {
+    e.preventDefault() // Prevents page reload
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async position => {
-          const { latitude, longitude } = position.coords;
-          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+          const { latitude, longitude } = position.coords
+          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`)
 
           try {
-            const API_KEY = 'AIzaSyB5jk1PqvooOy0lab0OaNWzN8dYgdOuBOY'; // Replace with your key
-            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`;
-    
-            const response = await axios.get(url);
+            const API_KEY = 'AIzaSyB5jk1PqvooOy0lab0OaNWzN8dYgdOuBOY'
+            const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY}`
+
+            const response = await axios.get(url)
             if (response.data.results.length > 0) {
-              const place = response.data.results[0].formatted_address;
-              console.log('Address:', place);
-              setAddress(place);
-              
+              const place = response.data.results[0].formatted_address
+              console.log('Address:', place)
+              setAddress(place)
+              setPickupLocation({
+                address:place,
+                lat:latitude,
+                lng:longitude
+              })
             } else {
-              console.error('No address found for this location.');
+              console.error('No address found for this location.')
             }
           } catch (err) {
-            console.error('Error fetching address:', err.message);
+            console.error('Error fetching address:', err.message)
           }
         },
         error => {
-          console.error('Error fetching location:', error);
-          alert('Unable to fetch location. Please enable GPS.');
+          console.error('Error fetching location:', error)
+          alert('Unable to fetch location. Please enable GPS.')
         }
-      );
+      )
     } else {
-      alert('Geolocation is not supported by this browser.');
+      alert('Geolocation is not supported by this browser.')
     }
-  };
+  }
 
-  // get current location functin 
-
-
-
-
-
+  // get current location functin
 
   useEffect(() => {
     if (!window.google) {
@@ -123,13 +126,54 @@ const Home = () => {
       }
 
       setDrop(place.formatted_address)
-      setDropLocation(place.formatted_address)
-      setCoordinates({
+      setDropLocation({
+        address:place.formatted_address,
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng()
       })
+    
+    
     })
   }, [])
+  
+
+
+ 
+  const AddLocationtoDb = async e => {
+    //for rent route and add location to database
+    e.preventDefault()
+
+    const usercookie = Cookies.get('webtoken')
+    if (!usercookie) return  navigate('/login')
+    let tokendata
+    if (usercookie) {
+      if (pickublocation.current.value === '')
+        return alert('Please enter pickup location')
+      if (droplocation.current.value === '')
+        return alert('Please enter Drop location')
+      const token = JSON.parse(usercookie)
+      const decodedToken = JSON.parse(atob(token.split('.')[1]))
+      tokendata = decodedToken
+      navigate(`/rent/${tokendata.userId}`)
+    } 
+    try {
+      const data = {
+        pickupLocation: pickupLocation,
+        dropLocation: dropLocation,
+        pickupLat: pickupLocation.lat,   
+        pickupLng: pickupLocation.lng,   
+        dropLat: dropLocation.lat,       
+        dropLng: dropLocation.lng,       
+        user_id: tokendata.userId
+      };
+      const responce = await axios.post("http://localhost:4000/api/user/getlocation", data)
+      console.log(responce)
+    }
+    catch(err) {
+      console.log("something went wrong")
+      console.log(err.message)
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -182,18 +226,17 @@ const Home = () => {
                 />
               </div>
               <hr className='mx-[40px] opacity-50' />
-                <div className='flex justify-end me-[40px]'>
-                      <button
-                      onClick={getCurrentLocation}
-                        className='flex gap-2 items-center mt-2 px-4 py-[2px] bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-300'
-                        
-                      >
-                        <i>
-                          <FaLocationCrosshairs />
-                        </i>
-                        <span>Use current location</span>
-                      </button>
-                    </div>
+              <div className='flex justify-end me-[40px]'>
+                <button
+                  onClick={getCurrentLocation}
+                  className='flex gap-2 items-center mt-2 px-4 py-[2px] bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition duration-300'
+                >
+                  <i>
+                    <FaLocationCrosshairs />
+                  </i>
+                  <span>Use current location</span>
+                </button>
+              </div>
 
               {/* Drop Location */}
               <div className='focus:shadow-md relative rounded-[8px] text-[20px] m-auto '>
@@ -211,11 +254,13 @@ const Home = () => {
             </div>
 
             {/* Book Now Button */}
-            <Link to={'/rent'}>
-              <button className='mt-[10px] cursor-pointer font-semibold hover:shadow-xl bg-gradient-to-r from-purple-500 to-blue-500 text-[20px] block m-auto w-[90%] sm:w-[70%] py-[10px] rounded-[8px] md:w-[60%] lg:w-[40%] transition duration-300'>
-                Book Now
-              </button>
-            </Link>
+
+            <button
+              onClick={AddLocationtoDb}
+              className='mt-[10px] cursor-pointer font-semibold hover:shadow-xl bg-gradient-to-r from-purple-500 to-blue-500 text-[20px] block m-auto w-[90%] sm:w-[70%] py-[10px] rounded-[8px] md:w-[60%] lg:w-[40%] transition duration-300'
+            >
+              Book Now
+            </button>
           </form>
 
           {/* Extra Info Section */}

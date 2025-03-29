@@ -7,6 +7,7 @@ import Layout from './assets/Routerlayout/Layout.jsx';
 import Prises from './assets/pages/Prises.jsx';
 import Test from './assets/pages/Test.jsx';
 import Context from './contextapi/Context.jsx';
+import { toast } from 'react-toastify';
 
 createRoot(document.getElementById('root')).render(
   <Context>
@@ -14,7 +15,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path='rent' element={<Prises />} />
+          <Route path="rent/:id" element={<Prises />} />
           <Route path='test' element={<Test />} />
         </Route>
         <Route path='login' element={<Login />} />

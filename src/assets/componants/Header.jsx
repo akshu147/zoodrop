@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <>
-      <header className='border rounded-[8px] text-white flex justify-between p-[10px_20px] items-center m-[20px_10px] md:m-[20px_40px] lg:m-[40px_100px]'>
+      <header className='rounded-[8px] text-white flex justify-between p-[10px_20px] items-center m-[20px_10px] md:m-[20px_40px] lg:m-[40px_100px]'>
         <figure className='w-[80px]' data-aos='fade-right'>
           <img src={logo} className='w-full' alt='' />
         </figure>

@@ -1,38 +1,83 @@
-import axios from 'axios';
-import React, { useContext, useState } from 'react';
-import { FaMotorcycle, FaTruck, FaTaxi } from 'react-icons/fa';
-import { FaLocationCrosshairs } from 'react-icons/fa6';
-import { MyContext } from '../../contextapi/Context';
+import axios from 'axios'
+import React, { useContext, useEffect, useState } from 'react'
+import { FaMotorcycle, FaTruck, FaTaxi } from 'react-icons/fa'
+import { FaLocationCrosshairs } from 'react-icons/fa6'
+import { MyContext } from '../../contextapi/Context'
+import { FaLocationDot } from 'react-icons/fa6'
+import { MdOutlineMyLocation } from 'react-icons/md'
+import { useParams } from 'react-router-dom'
 
 const Prises = () => {
-  const { pickupLocation, setPickupLocation, dropLocation, setDropLocation } = useContext(MyContext);
-  const [selectedService, setSelectedService] = useState('Bike');
+  const { pickupLocation, setPickupLocation, dropLocation, setDropLocation } =
+    useContext(MyContext)
+  const [selectedService, setSelectedService] = useState('Bike')
+  const [kmrange, setkmrange] = useState(0)
+  const [expecttime, setexpecttime] = useState("")
+  const param = useParams()
+  const destinationcount = async () => {
+    const data = {
+      pickup_lat:pickupLocation.lat,
+      pickup_lng:pickupLocation.lng,
+      pickup_address:pickupLocation.address,
+      drop_lat:dropLocation.lat,
+      drop_lng:dropLocation.lng,
+      drop_address:dropLocation.address,
+      id:param.id,
+
+    }
+
+
+    try {
+      const responce = await axios.post("http://localhost:4000/api/user/distance-matrix",data)
+        setkmrange(parseInt(responce.data.data.distance))
+      setexpecttime(responce.data.data.duration)
+      
+      
+    } catch (err) {
+      console.log('something wwent wrong')
+      console.log(err.message)
+    }
+  }
+  useEffect(() => {
+    destinationcount()
+  }, [])
   const services = [
-    { name: 'Bike', icon: <FaMotorcycle />, fare: '₹26 - ₹31' },
-    { name: 'Auto', icon: <FaTruck />, fare: '₹45 - ₹55' },
-    { name: 'Cab Economy', icon: <FaTaxi />, fare: '₹90 - ₹110' },
-    { name: 'Cab Premium', icon: <FaTaxi />, fare: '₹108 - ₹132' }
-  ];
-
-
+    { name: 'Bike', icon: <FaMotorcycle />, fare:kmrange },
+    { name: 'Auto', icon: <FaTruck />, fare:kmrange },
+    { name: 'Cab Economy', icon: <FaTaxi />, fare:kmrange  },
+    { name: 'Cab Premium', icon: <FaTaxi />, fare:kmrange }
+  ]
   return (
     <div className='p-4 text-white shadow-[0px_0px_10px_lightblue] rounded-xl m-[20px_10px] md:m-[20px_40px] lg:m-[40px_100px]'>
       <h2 className='text-xl font-bold mb-2'>Select Pickup & Drop Location</h2>
-      
-      <div className='bg-[#ffffff45] rounded-[10px] my-[20px]'>
-        <input
-          type='text'
-          placeholder='Pickup Location'
-          className='w-full py-2 px-[20px] rounded-md focus:outline-none'
-          value={ pickupLocation}// Using context value
-        />
+
+      <div className='bg-[#ffffff45] rounded-[10px] my-[20px] px-4'>
+        <div className=' flex items-center gap-2'>
+          <i className='text-green-400'>
+            <FaLocationDot />
+          </i>
+          <input
+            type='text'
+            placeholder='Pickup Location'
+            className='w-full py-2 rounded-md focus:outline-none'
+            value={pickupLocation.address} // Using context value
+            readOnly
+          />
+        </div>
+
         <hr className='mx-[20px] opacity-65' />
-        <input
-          type='text'
-          placeholder='Drop Location'
-          className='w-full py-2 px-[20px] rounded-md focus:outline-none'
-          value={dropLocation} // Using context value
-        />
+        <div className='flex items-center gap-2'>
+          <i className='text-red-400'>
+            <MdOutlineMyLocation />
+          </i>
+          <input
+            type='text'
+            placeholder='Drop Location'
+            className='w-full py-2 rounded-md focus:outline-none'
+            value={dropLocation.address} // Using context value
+            readOnly
+          />
+        </div>
       </div>
 
       <h3 className='text-lg font-semibold mb-2'>Select Service</h3>
@@ -49,7 +94,7 @@ const Prises = () => {
               <span className='text-xl'>{service.icon}</span>
               <span className='font-medium'>{service.name}</span>
             </div>
-            <span className='text-white'>{service.fare}</span>
+            <span className='text-white'>{kmrange * 5}</span>
           </div>
         ))}
       </div>
@@ -59,7 +104,7 @@ const Prises = () => {
         Book now
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default Prises;
+export default Prises
